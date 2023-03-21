@@ -14,10 +14,10 @@ cors = CORS()
 def create_app():
     
     app = Flask(__name__)
+    # cors = CORS(app, resources={r"/*": {"origins": "*"}})
     cors.init_app(app, resources={r"/*": {"origins": "*", "methods": "*"}})
     
-    # cors = CORS(app, resources={r"/*": {"origins": "*"}})
-    
+    # Set the default configuration settings as defined in config.py
     app.config.from_object('config.app_config')
     
     # Initialize extensions
@@ -26,19 +26,14 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
     
-    
+    # Register CLI commands for database
     from commands import db_commands
     app.register_blueprint(db_commands)
 
-
-    # import the controllers and activate the blueprints
-    from controllers import registerable_controllers
-    for controller in registerable_controllers:
-        app.register_blueprint(controller)
     
     
     @app.route('/')
     def index():
-        return 'hello world!'
+        {"message": "Welcome to the Flight review web server API!"}
     
     return app
