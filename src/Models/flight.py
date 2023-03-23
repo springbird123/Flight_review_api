@@ -8,6 +8,7 @@ class Flight(db.Model):
     #different flights can have the same flight number. For example, QF1 represents SYD-SIN and SIN-LHY two routes.
 
     flight_number = db.Column(db.String(), nullable=False)
+    airline = db.Column(db.String(), nullable=False)
     departure_airport_id = db.Column(db.Integer,db.ForeignKey('airports.airport_id'))
     arrival_airport_id = db.Column(db.Integer,db.ForeignKey('airports.airport_id'))
     reviews = db.relationship("Review", back_populates="flight", cascade="all, delete")
