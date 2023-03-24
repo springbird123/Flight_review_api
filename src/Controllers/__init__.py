@@ -1,9 +1,9 @@
-from .users_controller import users_controller
-from .flights_controller import flights_controller
-from .reviews_controller import reviews_controller
+from .users_controller import users
+from .flights_controller import flights
+from .reviews_controller import reviews
 
 registerable_controllers = [
-    users_controller,
-    flights_controller,
-    reviews_controller
+    users,
+    flights,
+    reviews
 ]

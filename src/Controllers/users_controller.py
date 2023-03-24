@@ -4,10 +4,10 @@ from Models.user import User
 from Schemas.user_schema import user_schema, users_schema
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
-users_controller = Blueprint('users_controller', __name__, url_prefix='/users')
+users = Blueprint('users_controller', __name__, url_prefix='/users')
 
 # Register a user
-@users_controller.route('/register', methods=['POST'])
+@users.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
 
@@ -31,7 +31,7 @@ def register():
     return jsonify(user_schema.dump(new_user)), 201
 
 # Login a user
-@users_controller.route('/login', methods=['POST'])
+@users.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
 
@@ -45,7 +45,7 @@ def login():
     return jsonify({"message": "Invalid username or password"}), 401
 
 # Update user information
-@users_controller.route('/update', methods=['PUT'])
+@users.route('/update', methods=['PUT'])
 @jwt_required()
 def update_user():
     user_id = get_jwt_identity()
@@ -69,7 +69,7 @@ def update_user():
     return jsonify(user_schema.dump(user)), 200
 
 # Delete a user account
-@users_controller.route('/delete', methods=['DELETE'])
+@users.route('/delete', methods=['DELETE'])
 @jwt_required()
 def delete_user():
     user_id = get_jwt_identity()
