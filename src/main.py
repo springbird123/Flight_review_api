@@ -30,18 +30,11 @@ def create_app():
     from commands import db_commands
     app.register_blueprint(db_commands)
 
+    # Import controllers
     from Controllers import registerable_controllers
     for controller in registerable_controllers:
         app.register_blueprint(controller)
     
     
-    # Define the root route for the API
-    @app.route('/')
-    def index():
-        return {"message": "Welcome to the Flight review web server API!"}
     
     return app
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run()
