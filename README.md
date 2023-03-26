@@ -1,4 +1,7 @@
 # T2A2 API Webserver  
+### [gitHub Repository](https://github.com/stuWolf/T2A2_API_Training_planer)
+
+### [Source Control](https://github.com/stuWolf/T2A2_API_Training_planer/commits/main)
 
 ## R1 Identification of the problem you are trying to solve by building this particular app.
 The problem this app aims to address is the lack of a centralized platform for users to share their flight experiences, search for flight reviews, and make informed decisions when booking future flights. This flight review API enables users to create and manage their accounts, post reviews about their flight experiences, and search for other people's reviews on specific flights. By providing this platform, users can easily access and contribute to a database of flight reviews, helping them make better decisions when selecting flights.
@@ -92,11 +95,24 @@ Description: Get the list of all users. Admin access is required.
 Required Data:
 - flight_id (integer): The ID of the flight.
 
-Required Data: None.
 
 Expected Response Data: A list of users with their details.
 
 Authentication Methods: JWT token required, admin access required.
+
+### **`/users/<int:user_id>`**
+
+**HTTP Request Verb: GET**
+
+Description: Get a specific user by their ID. Admin access is required.
+
+Required Data:
+- user_id (integer): The ID of the user to retrieve.
+
+
+Expected Response Data: The details of the requested user.
+
+Authentication Methods: JWT token required.
 
 
 ### **`/users/<int:id>/`**
@@ -290,7 +306,7 @@ Authentication Methods:  JWT token
 
 
 ## R6	An ERD for your app  
-
+<p align="center"><img src="./docs/ERD.png" width = 100%></p>
 
 ## R7	Detail any third party services that your app will use
 
@@ -310,7 +326,7 @@ Authentication Methods:  JWT token
 
 ## R8	Describe your projects models in terms of the relationships they have with each other  
 
-- User: Represents a user of the application. Each user can have multiple reviews associated with them. A user can create, update, and delete their own reviews. The User model also has an admin flag which determines whether the user has administrative privileges.
+- User: Represents a user of the application. It contains an id, username, email, and password associated with a given user.The User model also has an admin flag which determines whether the user has administrative privileges. A user can create, update, and delete their own reviews. Each user can have multiple reviews associated with them.
 
 - Review: Represents a review left by a user for a particular flight. Each review is associated with one user and one flight. A review can be created, updated, and deleted by the user who left the review, or an admin.
 
@@ -329,4 +345,23 @@ The Flight model also has a many-to-one relationship with the Airport model, whe
 
 ## R9	Discuss the database relations to be implemented in your application
 
+As the ERD shows, the database for this application is designed to store information about users, flights, airports, and reviews. Every models have a auto-incrementing unique ID as primary key to ensure uniqueness. The relationships between these tables have been defined in the models using SQLAlchemy's ORM.  For example, the Flight model has foreign key references to the Airport model for both the departure and arrival airports, while the Review model has foreign key references to both the User and Flight models. 
+
+As metion before,the User model has a one-to-many relationship with the Review model, as each user can have multiple reviews associated with them, but each review can only be associated with one user. 
+
+The Review model has a many-to-one relationship with both the Flight and User models. This is defined by the flight and user relationships in the Review model, which use the back_populates parameter to reference the reviews relationship in the Flight and User models, respectively. The cascade parameter is also used to specify that when a Flight or User is deleted, all associated Reviews should also be deleted.
+
+The Flight model has a one-to-many relationship with the Review model, as each flight can have multiple reviews associated with it, but each review can only be associated with one flight. 
+
+The Flight model also has a many-to-one relationship with the Airport model, where each flight has a departure airport and an arrival airport. This is defined by the departure_airport and arrival_airport relationships, which use the foreign_keys parameter to specify the foreign key columns in the Flight table that correspond to the Airport table.
+
 ## R10	Describe the way tasks are allocated and tracked in your project
+
+I used Trello board to tracked the development of the project. The board was organized into three main columns: "To Do", "In Progress", and "Done". Each application feature was broken down into user stories, which were added to the "To Do" column as cards. As development progressed, cards were moved between columns to reflect their status.
+
+I also have a  "Assignment Requirements" list on the Trello board to easily find the  marking criteria for each requirement and ensure that all coding and documentation requirements had been met.
+
+Each card contains a breif description of the feature or task to be completed. Within each card, sub-tasks were tracked using checklists, ensuring that all necessary steps were completed. Labels were used to differentiate between cards belonging to code/user stories, design, and documentation.
+
+<p align="center"><img src="./docs/BOARD.png" width = 100%></p>
+<p align="center"><img src="./docs/CARDS.png"></p>

@@ -16,10 +16,9 @@ def get_all_users():
     users = User.query.all()
     return jsonify(users_schema.dump(users))
 
-# Getting a specific user by ID (admin required)
+# Getting a specific user by ID
 @users.route("/<int:user_id>", methods=["GET"])
 @jwt_required()
-@admin_required
 def get_user(user_id):
     # Find the user in the db based on their ID
     user = User.query.get_or_404(user_id)
