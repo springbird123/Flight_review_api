@@ -1,7 +1,7 @@
 # T2A2 API Webserver  
-### [gitHub Repository]()
+## [gitHub Repository](https://github.com/springbird123/Flight_review_api)
 
-### [Trello Board]()
+## [Trello Board](https://trello.com/invite/b/PQWKqY7P/ATTIba63e48a8410b580c48f54ea4e2302558D87CEF7/t2a2)
 
 ## R1 Identification of the problem you are trying to solve by building this particular app.
 The problem this app aims to address is the lack of a centralized platform for users to share their flight experiences, search for flight reviews, and make informed decisions when booking future flights. This flight review API enables users to create and manage their accounts, post reviews about their flight experiences, and search for other people's reviews on specific flights. By providing this platform, users can easily access and contribute to a database of flight reviews, helping them make better decisions when selecting flights.
