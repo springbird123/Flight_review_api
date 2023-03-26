@@ -1,84 +1,86 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request, abort
 from main import db, bcrypt
 from Models.user import User
 from Schemas.user_schema import user_schema, users_schema
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from auth_controller import admin_required
 
 users = Blueprint('users_controller', __name__, url_prefix='/users')
 
-# Register a user
-@users.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
 
-    # Check if user already exists
-    existing_user = User.query.filter_by(username=data['username']).first()
-    if existing_user:
-        return jsonify({"message": "User already exists"}), 409
-
-    # Create new user and hash the password
-    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(
-        username=data['username'], 
-        email=data['email'], 
-        password=hashed_password
-        )
-
-    # Save user to database
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify(user_schema.dump(new_user)), 201
-
-# Login a user
-@users.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-
-    user = User.query.filter_by(username=data['username']).first()
-
-    # Check if user exists and password is correct
-    if user and bcrypt.check_password_hash(user.password, data['password']):
-        access_token = create_access_token(identity=user.user_id)
-        return jsonify({"access_token": access_token}), 200
-
-    return jsonify({"message": "Invalid username or password"}), 401
-
-# Update user information
-@users.route('/update', methods=['PUT'])
+# Getting the list of all users (admin required)
+@users.route("/", methods=["GET"])
 @jwt_required()
-def update_user():
+@admin_required
+def get_all_users():
+    users = User.query.all()
+    return jsonify(users_schema.dump(users))
+
+# Getting a specific user by ID (admin required)
+@users.route("/<int:user_id>", methods=["GET"])
+@jwt_required()
+@admin_required
+def get_user(user_id):
+    # Find the user in the db based on their ID
+    user = User.query.get_or_404(user_id)
+    return jsonify(user_schema.dump(user))
+
+# Updating a user's details
+@users.route("/<int:id>/", methods=["PUT"])
+@jwt_required()
+def update_user(id):
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = User.query.filter_by(id=user_id).first()
 
-    if not user:
-        return jsonify({"message": "User not found"}), 404
+    if user.id != id:
+        return abort(401, description="You are not authorized to update this user")
 
-    data = request.get_json()
-
-    # Update user information
-    if 'username' in data:
-        user.username = data['username']
-    if 'email' in data:
-        user.email = data['email']
-    if 'password' in data:
-        user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    user_fields = user_schema.load(request.json)
+    # Try to extract the required fields and catch KeyError if any field is missing
+    try:
+        user_name = user_fields["user_name"]
+        email = user_fields["email"]
+        password = user_fields["password"]
+    except KeyError:
+        return abort(400, description="Missing data for required fields")
+        
+    # Create a new User object, and set its attributes
+    user.user_name = user_name
+    user.email = email
+    user.password = bcrypt.generate_password_hash(password).decode("utf-8")
+    user.admin = False
 
     db.session.commit()
 
-    return jsonify(user_schema.dump(user)), 200
+    return jsonify(user_schema.dump(user))
 
-# Delete a user account
-@users.route('/delete', methods=['DELETE'])
+
+# Grant admin privileges to a user((admin required))
+@users.route("/<int:user_id>/admin", methods=["PUT"])
 @jwt_required()
-def delete_user():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+@admin_required
+def set_admin(user_id):
+    user = User.query.get_or_404(user_id)
+    # Update the 'admin' field of the user to True
+    user.admin = True
+    db.session.commit()
 
-    if not user:
-        return jsonify({"message": "User not found"}), 404
+    # Return a success message along with the updated user data
+    return jsonify({"message": "Admin privileges granted to the user", "user": user_schema.dump(user)})
+
+
+# Delete the user 
+@users.route("/<int:id>/", methods=["DELETE"])
+@jwt_required()
+def delete_user(id):
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+
+    if user.id != id:
+        return abort(401, description="You are not authorized to delete this user")
 
     db.session.delete(user)
     db.session.commit()
 
-    return jsonify({"message": "User account deleted"}), 200
+    return jsonify(user_schema.dump(user))
+

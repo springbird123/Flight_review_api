@@ -63,12 +63,23 @@ def seed_flights():
 # Function to seed the users table with the specified user
 def seed_users():
     user = User(
-        user_id=1,
         username="qantas_lover",
         email="loveqantas@email.com",
-        password=bcrypt.generate_password_hash("password123").decode('utf-8')
+        password=bcrypt.generate_password_hash("password123").decode('utf-8'),
+        admin=False
     )
     db.session.add(user)
+
+    # Add an admin user
+    admin_user = User(
+        user_id = 0,
+        username="admin",
+        email="admin@email.com",
+        password=bcrypt.generate_password_hash("admin_password").decode('utf-8'),
+        admin=True
+    )
+    db.session.add(admin_user)
+
     db.session.commit()
 
 # Function to seed the reviews table with the specified review
