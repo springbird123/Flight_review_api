@@ -3,7 +3,7 @@ from main import db, bcrypt
 from Models.user import User
 from Schemas.user_schema import user_schema, users_schema
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from auth_controller import admin_required
+from .auth_controller import admin_required
 
 users = Blueprint('users_controller', __name__, url_prefix='/users')
 
@@ -59,8 +59,8 @@ def update_user(id):
 @users.route("/<int:user_id>/admin", methods=["PUT"])
 @jwt_required()
 @admin_required
-def set_admin(user_id):
-    user = User.query.get_or_404(user_id)
+def set_admin(id):
+    user = User.query.get_or_404(id)
     # Update the 'admin' field of the user to True
     user.admin = True
     db.session.commit()
@@ -75,8 +75,9 @@ def set_admin(user_id):
 def delete_user(id):
     user_id = get_jwt_identity()
     user = User.query.filter_by(id=user_id).first()
-
-    if user.id != id:
+    
+    # Check if the user_id associated with the review matches the user_id from the JWT token, or if the user is an admin
+    if user.id != id and not user.admin:
         return abort(401, description="You are not authorized to delete this user")
 
     db.session.delete(user)

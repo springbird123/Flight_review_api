@@ -26,6 +26,23 @@ Performance: PostgreSQL may have lower performance for certain workloads compare
 Complexity: PostgreSQL offers a wide range of features and customizability, which can make it more complex to set up and manage compared to simpler database systems.
 
 ## R4 Identify and discuss the key functionalities and benefits of an ORM  
+An Object-Relational Mapping (ORM) is a technique that enables developers to map database tables and their relationships to objects in the programming language. The ORM provides a layer of abstraction between the application code and the database, which makes it easier to work with data.
+
+Key functionalities and benefits of using an ORM includes:
+
+Abstraction of database operations: With an ORM, developers don't have to write complex SQL queries to interact with the database. The ORM provides an abstraction layer that allows developers to work with objects instead of writing SQL statements. This can save a lot of development time and effort.
+
+Object-oriented programming (OOP) principles: ORMs allow developers to use OOP principles in their database code. For example, they can define classes and objects that correspond to database tables and use inheritance and encapsulation to organize the code.
+
+Database portability: ORMs provide an abstraction layer that isolates the application code from the database engine. This means that developers can switch to a different database engine without having to rewrite their code. They can also use the same code to work with multiple databases.
+
+Improved performance: ORMs can help improve performance by caching data and minimizing database access. They can also optimize queries and transactions to reduce latency and increase throughput.
+
+Easier testing: ORMs make it easier to write unit tests for database code. Since the ORM abstracts the database operations, developers can create mock objects to simulate database interactions and test the application code in isolation.
+
+Reduced risk of SQL injection: By using an ORM, developers can avoid SQL injection attacks since the ORM is responsible for generating SQL statements and sanitizing user input.
+
+Overall, using an ORM can help developers write cleaner, more maintainable code that is easier to test and less prone to errors. It can also save development time and effort by providing an abstraction layer that simplifies database interactions.
 
 ## Entity Relationship Diagram  
 

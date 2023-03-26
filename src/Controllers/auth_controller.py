@@ -6,7 +6,7 @@ from datetime import timedelta
 from flask_jwt_extended import create_access_token, get_jwt_identity
 from functools import wraps
 
-auth = Blueprint('auth', __name__, url_prefix='/auth')
+auth = Blueprint('auth_controller', __name__, url_prefix='/auth')
 
 @auth.route('/register', methods=['POST'])
 def auth_register():
@@ -20,7 +20,7 @@ def auth_register():
 
     # Create a new user with the request data and hashed password
     new_user = User(
-        username=user_fields["username"],
+        username=user_fields["user_name"],
         email=user_fields["email"],
         password=bcrypt.generate_password_hash(user_fields["password"]).decode("utf-8")
     )

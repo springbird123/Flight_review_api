@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify,abort
 from main import db
 from Models.review import Review
 from Models.user import User
@@ -18,6 +18,7 @@ def get_reviews_by_flight(flight_id):
 
 # Get reviews by user ID
 @reviews.route('/user/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_reviews_by_user(user_id):
     user = User.query.get_or_404(user_id)
     reviews = Review.query.filter_by(user_id=user_id).all()
@@ -55,8 +56,17 @@ def add_review():
 @reviews.route('/<int:review_id>', methods=['PUT'])
 @jwt_required()
 def update_review(review_id):
-    data = request.get_json()
+    # Get the user_id from the JWT token
+    user_id = get_jwt_identity()
+    
+    # Get the review by ID
     review = Review.query.get_or_404(review_id)
+    
+    # Check if the user_id associated with the review matches the user_id from the JWT token
+    if review.user_id != user_id:
+        return abort(401, description="You are not authorized to update this review")
+    
+    data = request.get_json()
 
     review.rating = data['rating']
     review.date_flown = data['date_flown']
@@ -73,10 +83,20 @@ def update_review(review_id):
 @reviews.route('/<int:review_id>', methods=['DELETE'])
 @jwt_required()
 def delete_review(review_id):
-    review = Review.query.get_or_404(review_id)
+    # Get the user_id from the JWT token
+    user_id = get_jwt_identity()
+    
+    # Get the user from the database
+    user = User.query.get(user_id)
 
+    # Get the review by ID
+    review = Review.query.get_or_404(review_id)
+    
+    # Check if the user_id associated with the review matches the user_id from the JWT token, or if the user is an admin
+    if review.user_id != user_id and not user.admin:
+        return abort(401, description="You are not authorized to delete this review")
 
     db.session.delete(review)
     db.session.commit()
 
-    return jsonify({"message": "Review deleted"})
+    return jsonify({"message": "Review successfully deleted"})
