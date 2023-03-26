@@ -291,6 +291,7 @@ Authentication Methods:  JWT token
 
 ## R6	An ERD for your app  
 
+
 ## R7	Detail any third party services that your app will use
 
 - Flask: A lightweight web framework for Python that makes it easy to create web applications and APIs. It is used for setting up the API and handling the HTTP requests and responses.
@@ -308,6 +309,23 @@ Authentication Methods:  JWT token
 
 
 ## R8	Describe your projects models in terms of the relationships they have with each other  
+
+- User: Represents a user of the application. Each user can have multiple reviews associated with them. A user can create, update, and delete their own reviews. The User model also has an admin flag which determines whether the user has administrative privileges.
+
+- Review: Represents a review left by a user for a particular flight. Each review is associated with one user and one flight. A review can be created, updated, and deleted by the user who left the review, or an admin.
+
+- Flight: Represents a flight in the airline. Each flight has multiple reviews associated with it. A flight can be searched by departure and arrival airports or by flight number. Flights can be added by users, but can only be updated, and deleted by an admin.
+
+- Airport: Represents an airport that can be used as a departure or arrival airport for a flight.
+
+In terms of relationships, the User model has a one-to-many relationship with the Review model, as each user can have multiple reviews associated with them, but each review can only be associated with one user. 
+
+The Review model has a many-to-one relationship with both the Flight and User models. This is defined by the flight and user relationships in the Review model, which use the back_populates parameter to reference the reviews relationship in the Flight and User models, respectively. The cascade parameter is also used to specify that when a Flight or User is deleted, all associated Reviews should also be deleted.
+
+The Flight model has a one-to-many relationship with the Review model, as each flight can have multiple reviews associated with it, but each review can only be associated with one flight. 
+
+The Flight model also has a many-to-one relationship with the Airport model, where each flight has a departure airport and an arrival airport. This is defined by the departure_airport and arrival_airport relationships, which use the foreign_keys parameter to specify the foreign key columns in the Flight table that correspond to the Airport table.
+
 
 ## R9	Discuss the database relations to be implemented in your application
 
