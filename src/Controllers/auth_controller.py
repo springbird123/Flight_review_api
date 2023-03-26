@@ -22,8 +22,10 @@ def auth_register():
     new_user = User(
         username=user_fields["user_name"],
         email=user_fields["email"],
-        password=bcrypt.generate_password_hash(user_fields["password"]).decode("utf-8")
+        password=bcrypt.generate_password_hash(user_fields["password"]).decode("utf-8"),
+        admin=False  # Set admin attribute to False by default
     )
+
 
     # Add the new user to the database and commit the changes
     db.session.add(new_user)

@@ -11,6 +11,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     username = ma.String(required=True, validate=Length(min=1))
     email = ma.Email(required=True)
     password = ma.String(required=True, validate=Length(min=8), load_only=True) # Exclude from output
+    
 
 # Initialize the UserSchema instances
 user_schema = UserSchema()

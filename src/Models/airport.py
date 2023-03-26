@@ -9,8 +9,7 @@ class Airport(db.Model):
     airport_name = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(), nullable=False)
     country = db.Column(db.String(), nullable=False)
-    #three-character alphanumeric geocode designating airports around the world by the International Air Transport Association
-    IATA = db.Column(db.String())
+    IATA = db.Column(db.String()) #three-character alphanumeric geocode designating airports around the world by the International Air Transport Association
     ICAO = db.Column(db.String(), nullable=False)
     #flights_departure = db.relationship("Flight", foreign_keys=[Flight.departure_airport_id], cascade="all, delete")
     #flights_arrival = db.relationship("Flight", foreign_keys=[Flight.arrival_airport_id], cascade="all, delete")

@@ -25,6 +25,9 @@ def get_flights_by_airports_or_flight_number():
     arrival = request.args.get('arrival', None)
     flight_number = request.args.get('flight_number', None)
 
+    if not (departure and arrival) and not flight_number:
+        return jsonify({"message": "Both departure and arrival airports must be provided or a flight number must be provided"}), 400
+
     query = Flight.query.join(Flight.departure_airport).join(Flight.arrival_airport)
 
     if departure and arrival:
@@ -54,6 +57,8 @@ def add_flight():
     new_flight = Flight(flight_number=flight_number, airline=airline, departure_airport_id=departure_airport_id, arrival_airport_id=arrival_airport_id)
     db.session.add(new_flight)
     db.session.commit()
+
+    return jsonify({"message": f"Flight with flight number {flight_number} has been added"})
 
 # Update a flight (admin required)
 @flights.route('/<int:flight_id>', methods=['PUT'])
